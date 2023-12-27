@@ -9,7 +9,14 @@ use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
-    public function show(Article $article){
+    public function index()
+    {
+     $articles= Article::all();
+     return ArticleResource::collection($articles);
+    }
+
+    public function show(Article $article): ArticleResource
+    {
         return  ArticleResource::make($article);
     }
 }
