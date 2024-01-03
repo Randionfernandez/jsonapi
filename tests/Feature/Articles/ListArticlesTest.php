@@ -19,7 +19,8 @@ class ListArticlesTest extends TestCase
         $article = Article::factory()->create();
 
         $response = $this->getJson(route('api.v1.articles.show', $article));
-//        $response->assertSee($article->title);
+
+        //        $response->assertSee($article->title);
         $response->assertExactJson([
             'data' => [
                 'type' => 'articles',
@@ -52,7 +53,7 @@ class ListArticlesTest extends TestCase
             'data' => [
                 [
                     'type' => 'articles',
-                    'id' => (string)$articles[0]->getRouteKey(),
+                    'id' => (string) $articles[0]->getRouteKey(),
                     'attributes' => [
                         'title' => $articles[0]->title,
                         'slug' => $articles[0]->slug,

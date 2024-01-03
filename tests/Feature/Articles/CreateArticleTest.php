@@ -35,6 +35,7 @@ class CreateArticleTest extends TestCase
             'Location',
             route('api.v1.articles.show', $article)
         );
+
         $response->assertStatus(201);  // assertCreated() es un alias de este assert
         $response->assertExactJson([
             'data' => [

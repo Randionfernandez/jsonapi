@@ -19,7 +19,7 @@ class ValidateJsonApiHeadersTest extends TestCase
     /** @test */
     public function accept_header_must_be_present_in_all_request(): void
     {
-        $this->getJson('test_route')->assertStatus(406);
+        $this->get('test_route')->assertStatus(406);
 
         // En la función 'get' el segundo parámetro contiene las cabeceras
         $this->get('test_route',[
@@ -30,9 +30,10 @@ class ValidateJsonApiHeadersTest extends TestCase
     public function content_type_header_must_be_present_in_all_post_request(): void
     {
         // Sin cabecera 'accept' nos devolverá un estado 406
+//        $this->post('test_route')->assertStatus(406);
         $this->post('test_route')->assertStatus(406);
 
-        // Con la cabecera 'accept' pero sin la cabecera 'content-type' nos devolverá un estado 425
+        // Con la cabecera 'accept' pero sin la cabecera 'content-type' nos devolverá un estado 415
         // El tercer parámetro contiene las cabeceras.
         $this->post('test_route', [], [
             'accept'=> 'application/vnd.api+json',
@@ -87,7 +88,7 @@ class ValidateJsonApiHeadersTest extends TestCase
     public function content_type_header_must_not_be_present_in_empty_responses(): void
     {
         Route::any('empty_response', fn() => response()->noContent())
-        ->middleware(ValidateJsonApiHeaders::class); // devuelve estado 204 Sin contenido
+        ->middleware(ValidateJsonApiHeaders::class); // devuelve estado 204 No content
 
 
         $this->get('empty_response', [
