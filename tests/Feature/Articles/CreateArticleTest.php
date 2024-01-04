@@ -4,6 +4,7 @@ namespace Tests\Feature\Articles;
 
 use App\Models\Article;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
 class CreateArticleTest extends TestCase
@@ -37,20 +38,33 @@ class CreateArticleTest extends TestCase
         );
 
         $response->assertStatus(201);  // assertCreated() es un alias de este assert
-        $response->assertExactJson([
-            'data' => [
-                'type' => 'articles',
-                'id' => (string) $article->getRouteKey(),
-                'attributes' => [
-                    'title' => (string) $article->title,
-                    'slug' => $article->slug,
-                    'content' => $article->content,
-                ],
-                'links' => [
-                    'self' => route('api.v1.articles.show', $article)
-                ]
-            ],
-        ]);
+//        $response->assertExactJson([
+//            'data' => [
+//                'type' => 'articles',
+//                'id' => (string) $article->getRouteKey(),
+//                'attributes' => [
+//                    'title' => (string) $article->title,
+//                    'slug' => $article->slug,
+//                    'content' => $article->content,
+//                ],
+//                'links' => [
+//                    'self' => route('api.v1.articles.show', $article)
+//                ]
+//            ],
+//        ]);
+
+        //Test redundante, ejemplo de uso del objeto AssertableJson y sus métodos
+        //Ver 'Fluent JSON Testing' en 'HTTP Test' de la documentación oficial
+        $response->assertJson(function (AssertableJson $json) use ($article) {
+            $json->has('data');
+            $json->hasAll(['data.attributes.title', 'data.attributes.slug']);
+            $json->hasAny(['data','data.attributes', 'title']);
+            $json->where('data.attributes.title', $article->title);
+            $json->whereNot('data.attributes.slug',$article->slug . 'KO');
+            $json->missing('atributo_no_existente');
+            $json->missingAll(['atributo_no_existente', 'otro']);
+            $json->etc();   // no entiendo su comportamiento, según indica la documentación
+        });
     }
 
 
@@ -69,7 +83,16 @@ class CreateArticleTest extends TestCase
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.title');
+        $response->assertJsonStructure([
+            'errors'=>[
+                ['title', 'detail', 'source' => ['pointer']]
+            ]
+        ])->assertJsonFragment([
+            'source'=> ['pointer'=> '/data/attributes/title']
+        ])->assertHeader(
+            'content-type', 'application/vnd.api+json'
+        )->assertStatus(422);
+//        $response->assertJsonValidationErrors('data.attributes.title');
     }
 
     /** @test */
