@@ -5,11 +5,14 @@ namespace Tests\Feature\Articles;
 use App\Models\Article;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
+use Illuminate\Testing\TestResponse;
+use Tests\MakesJsonApiRequests;
 use Tests\TestCase;
+
 
 class CreateArticleTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, MakesJsonApiRequests;
 
     /**
      * @test
@@ -58,9 +61,9 @@ class CreateArticleTest extends TestCase
         $response->assertJson(function (AssertableJson $json) use ($article) {
             $json->has('data');
             $json->hasAll(['data.attributes.title', 'data.attributes.slug']);
-            $json->hasAny(['data','data.attributes', 'title']);
+            $json->hasAny(['data', 'data.attributes', 'title']);
             $json->where('data.attributes.title', $article->title);
-            $json->whereNot('data.attributes.slug',$article->slug . 'KO');
+            $json->whereNot('data.attributes.slug', $article->slug . 'KO');
             $json->missing('atributo_no_existente');
             $json->missingAll(['atributo_no_existente', 'otro']);
             $json->etc();   // no entiendo su comportamiento, según indica la documentación
@@ -69,9 +72,10 @@ class CreateArticleTest extends TestCase
 
 
     // PROBANDO ERRORES DE VALIDACIÓN
-    /** @test */
-    public function title_is_required(){
 
+    /** @test */
+    public function title_is_required()
+    {
         $response = $this->postJson(route('api.v1.articles.create'), [
             'data' => [
                 'type' => 'articles',
@@ -83,21 +87,12 @@ class CreateArticleTest extends TestCase
             ]
         ]);
 
-        $response->assertJsonStructure([
-            'errors'=>[
-                ['title', 'detail', 'source' => ['pointer']]
-            ]
-        ])->assertJsonFragment([
-            'source'=> ['pointer'=> '/data/attributes/title']
-        ])->assertHeader(
-            'content-type', 'application/vnd.api+json'
-        )->assertStatus(422);
-//        $response->assertJsonValidationErrors('data.attributes.title');
+        $response->assertJsonApiValidationErrors('title');
     }
 
     /** @test */
-    public function slug_is_required(){
-
+    public function slug_is_required()
+    {
         $response = $this->postJson(route('api.v1.articles.create'), [
             'data' => [
                 'type' => 'articles',
@@ -109,11 +104,12 @@ class CreateArticleTest extends TestCase
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.slug');
+        $response->assertJsonApiValidationErrors('slug');
     }
 
     /** @test */
-    public function content_is_required(){
+    public function content_is_required()
+    {
 
         $response = $this->postJson(route('api.v1.articles.create'), [
             'data' => [
@@ -126,11 +122,12 @@ class CreateArticleTest extends TestCase
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.content');
+        $response->assertJsonApiValidationErrors('content');
     }
 
     /** @test */
-    public function title_must_be_at_least_4_characters(){
+    public function title_must_be_at_least_4_characters()
+    {
 
         $response = $this->postJson(route('api.v1.articles.create'), [
             'data' => [
@@ -143,6 +140,6 @@ class CreateArticleTest extends TestCase
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.title');
+        $response->assertJsonApiValidationErrors('title');
     }
 }
