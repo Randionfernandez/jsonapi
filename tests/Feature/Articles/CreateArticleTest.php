@@ -21,7 +21,7 @@ class CreateArticleTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $response = $this->postJson(route('api.v1.articles.create'), [
+        $response = $this->postJson(route('api.v1.articles.store'), [
             'data' => [
                 'type' => 'articles',
                 'attributes' => [
@@ -76,7 +76,7 @@ class CreateArticleTest extends TestCase
     /** @test */
     public function title_is_required()
     {
-        $response = $this->postJson(route('api.v1.articles.create'), [
+        $response = $this->postJson(route('api.v1.articles.store'), [
             'data' => [
                 'type' => 'articles',
                 'attributes' => [
@@ -93,7 +93,7 @@ class CreateArticleTest extends TestCase
     /** @test */
     public function slug_is_required()
     {
-        $response = $this->postJson(route('api.v1.articles.create'), [
+        $response = $this->postJson(route('api.v1.articles.store'), [
             'data' => [
                 'type' => 'articles',
                 'attributes' => [
@@ -111,7 +111,7 @@ class CreateArticleTest extends TestCase
     public function content_is_required()
     {
 
-        $response = $this->postJson(route('api.v1.articles.create'), [
+        $response = $this->postJson(route('api.v1.articles.store'), [
             'data' => [
                 'type' => 'articles',
                 'attributes' => [
@@ -129,7 +129,7 @@ class CreateArticleTest extends TestCase
     public function title_must_be_at_least_4_characters()
     {
 
-        $response = $this->postJson(route('api.v1.articles.create'), [
+        $response = $this->postJson(route('api.v1.articles.store'), [
             'data' => [
                 'type' => 'articles',
                 'attributes' => [
