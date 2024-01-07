@@ -184,7 +184,7 @@ class ValidateJsonApiDocumentTest extends TestCase
 
         $this->patchJson('test_route', [
             'data' => [
-                'id' => 'string',
+                'id' => '1',
                 'type' => 'string',
                 'attributes' => [
                     'name' => 'test',

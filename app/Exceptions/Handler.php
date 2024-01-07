@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Http\Responses\JsonApiValidationErrorResponse;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
 use Throwable;
@@ -29,35 +30,60 @@ class Handler extends ExceptionHandler
         });
     }
 
-    public function invalidJson($request, ValidationException $exception)
-    {
-        $errors = [];
-        $title = $exception->getMessage();
+    /* Esta es la solución final para el método invalidJson() una vez creada una clase específica para
+    los errores de validación en formato json:api, según se sugiere en
+                14.- Cómo modificar los errores de validación en Laravel
+    Más abajo vemos comentadas las otras dos soluciones:
+        - con foreach y,
+        - con colecciones
 
-        // Con foreach
-        foreach ($exception->errors() as $field => $message) {
-            $pointer = '/' . str_replace('.', '/', $field);
-            $errors[] = [
-                'title' => $title,
-                'detail' => $message[0],
-                'source' => [
-                    'pointer' => $pointer
-                ]
-            ];
-        }
-/*     // Alternativa al foreach. Colecciones
-        $errors= collect($exception->errors())->
-        map(function ($message, $field) use ($title) {
-            return [
-                'title' => $title,
-                'detail' => $message[0],
-                'source' => [
-                    'pointer' => '/' . str_replace('.', '/', $field)
-                ]];
-        })->values();
-*/
-        return response()->json([
-            'errors' => $errors
-        ], 422);
+    Las tres funcionan correctamente
+    */
+    public function invalidJson($request, ValidationException $exception): JsonApiValidationErrorResponse
+    {
+        return new JsonApiValidationErrorResponse($exception);
     }
+
+    /* ---------------------------   Solución con foreach --------------------------------------- */
+//    public function invalidJson($request, ValidationException $exception)
+//    {
+//        $errors = [];
+//        $title = $exception->getMessage();
+//
+//        foreach ($exception->errors() as $field => $message) {
+//            $pointer = '/' . str_replace('.', '/', $field);
+//            $errors[] = [
+//                'title' => $title,
+//                'detail' => $message[0],
+//                'source' => [
+//                    'pointer' => $pointer
+//                ]
+//            ];
+//        }
+//
+//        return response()->json([
+//            'errors' => $errors,
+//        ], 422);
+//    }
+
+    /* --------------------  Solución con colecciones  ----------------------------------- */
+//    public function invalidJson($request, ValidationException $exception)
+//    {
+//        $errors = [];
+//        $title = $exception->getMessage();
+//
+//        $errors = collect($exception->errors())->
+//        map(function ($message, $field) use ($title) {
+//            return [
+//                'title' => $title,
+//                'detail' => $message[0],
+//                'source' => [
+//                    'pointer' => '/' . str_replace('.', '/', $field)
+//                ]];
+//        })->values();
+//
+//        return response()->json([
+//            'errors' => $errors
+//        ], 422);
+//    }
 }

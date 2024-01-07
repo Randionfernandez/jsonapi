@@ -20,7 +20,7 @@ trait MakesJsonApiRequests
         return function ($attribute) {
             /** @var TestResponse $this */
             $pointer = (Str::of($attribute)->startsWith('data')
-                ? "/" . str_replace('.','/', $attribute)
+                ? "/" . str_replace('.', '/', $attribute)
                 : "/data/attributes/{$attribute}");
             try {
                 $this->assertJsonFragment([
@@ -49,27 +49,25 @@ trait MakesJsonApiRequests
     }
 
 
-    public
-    function json($method, $uri, array $data = [], array $headers = [], $options = 0): TestResponse
+    public function json($method, $uri, array $data = [], array $headers = [], $options = 0): TestResponse
     {
         $headers['accept'] = 'application/vnd.api+json';
 
         return parent::json($method, $uri, $data, $headers, $options);
     }
 
-    public
-    function postJson($uri, array $data = [], array $headers = [], $options = 0): TestResponse
+    public function postJson($uri, array $data = [], array $headers = [], $options = 0): TestResponse
     {
         $headers['content-type'] = 'application/vnd.api+json';
 
         return parent::postJson($uri, $data, $headers, $options);
     }
 
-    public
-    function patchJson($uri, array $data = [], array $headers = [], $options = 0): TestResponse
+    public function patchJson($uri, array $data = [], array $headers = [], $options = 0): TestResponse
     {
         $headers['content-type'] = 'application/vnd.api+json';
 
         return parent::patchJson($uri, $data, $headers, $options);
+//        return $this->patchJson($uri, $data, $headers, $options);  // crearía un bucle infinito
     }
 }
