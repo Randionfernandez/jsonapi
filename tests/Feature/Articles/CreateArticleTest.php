@@ -5,7 +5,6 @@ namespace Tests\Feature\Articles;
 use App\Models\Article;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Illuminate\Testing\TestResponse;
 use Tests\MakesJsonApiRequests;
 use Tests\TestCase;
 
@@ -19,7 +18,7 @@ class CreateArticleTest extends TestCase
      */
     public function can_create_articles(): void
     {
-        $this->withoutExceptionHandling();
+//        $this->withoutExceptionHandling();
 
         $response = $this->postJson(route('api.v1.articles.store'), [
             'data' => [
