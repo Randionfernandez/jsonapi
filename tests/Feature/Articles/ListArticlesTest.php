@@ -4,11 +4,12 @@ namespace Tests\Feature\Articles;
 
 use App\Models\Article;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\MakesJsonApiRequests;
 use Tests\TestCase;
 
 class ListArticlesTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, MakesJsonApiRequests;
 
     /** @test */
     public function can_fetch_a_single_article(): void
