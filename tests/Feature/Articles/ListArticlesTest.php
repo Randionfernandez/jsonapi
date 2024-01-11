@@ -9,7 +9,7 @@ use Tests\TestCase;
 
 class ListArticlesTest extends TestCase
 {
-    use RefreshDatabase, MakesJsonApiRequests;
+    use RefreshDatabase;
 
     /** @test */
     public function can_fetch_a_single_article(): void

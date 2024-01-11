@@ -13,11 +13,14 @@ use Tests\TestCase;
 
 class ValidateJsonApiDocumentTest extends TestCase
 {
-    use RefreshDatabase, MakesJsonApiRequests;
+    use RefreshDatabase;
 
     protected function setup(): void
     {
         parent::setup();
+
+        $this->withoutJsonApiDocumentFormatting();
+
         Route::any('test_route', fn() => 'Ok')->middleware([
             ValidateJsonApiHeaders::class,
             ValidateJsonApiDocument::class,
@@ -60,11 +63,7 @@ class ValidateJsonApiDocumentTest extends TestCase
     public function data_type_is_required()
     {
         $this->postJson('test_route', [
-            'data' => [
-                'attributes' => [
-                    'name' => 'test',
-                ],
-            ],
+                 'name' => 'test',
         ],
         )->assertJsonApiValidationErrors('data.type');
 
