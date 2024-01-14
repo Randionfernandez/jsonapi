@@ -83,23 +83,33 @@ trait MakesJsonApiRequests
             if ($method === 'POST' || $method === 'PATCH') {
                 $headers['content-type'] = 'application/vnd.api+json';
             }
+
+            if ($method === 'PATCH') {
+                $headers['content-type'] = 'application/vnd.api+json';
+            }
         }
 
-//        if ($this->formatJsonApiDocument && ($method === 'POST' || $method === 'PATCH')) {
-//            if (!isset($data['data'])) {
-//                $formattedData = $this->getFormattedData($uri, $data);
-//            }
-//        }
-//        return parent::json($method, $uri, $formattedData ?? $data, $headers, $options);
-
         if ($this->formatJsonApiDocument) {
-            $formattedData['data']['attributes'] = $data;
-            $formattedData['data']['type'] = (string)Str::of($uri)->after('api/v1/');
+            $formattedData = $this->getFormattedData($uri, $data);
         }
 
         return parent::json($method, $uri, $formattedData ?? $data, $headers, $options);
     }
 
+    protected function getFormattedData($uri, array $data): array
+    {
+        $path = parse_url($uri)['path'];
+        $type = (string)Str::of($path)->after('api/v1/')->before('/');
+        $id = (string)Str::of($path)->after($type)->replace('/', '');
+
+        return [
+            'data' => [
+                'id' => $id,
+                'type' => $type,
+                'attributes' => $data
+            ]
+        ];
+    }
 //    protected function getFormattedData($uri, array $data): array
 //    {
 //        $path = parse_url($uri)['path'];
