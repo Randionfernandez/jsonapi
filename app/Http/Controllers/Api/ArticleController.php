@@ -7,7 +7,6 @@ use App\Http\Requests\SaveArticleRequest;
 use App\Http\Resources\ArticleCollection;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class ArticleController extends Controller
@@ -20,7 +19,8 @@ class ArticleController extends Controller
 
     public function store(SaveArticleRequest $request)
     {
-        $article = Article::create($request->validated()['data']['attributes']);
+        $article = Article::create($request->validated('data.attributes'));
+//        $article = Article::create($request->validated()['data']['attributes']); // notación antigua
         return ArticleResource::make($article);
     }
 

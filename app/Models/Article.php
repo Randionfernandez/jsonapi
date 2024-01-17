@@ -16,6 +16,8 @@ class Article extends Model
      * @var array
      */
     protected $guarded = [];
+//    protected $primaryKey = 'slug';
+//    protected $keyType = 'string';
 
     /**
      * The attributes that should be cast to native types.
@@ -27,6 +29,11 @@ class Article extends Model
         'category_id' => 'integer',
         'user_id' => 'integer',
     ];
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 
     public function category(): BelongsTo
     {
