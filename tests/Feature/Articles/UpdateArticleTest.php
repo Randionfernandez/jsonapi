@@ -23,7 +23,7 @@ class UpdateArticleTest extends TestCase
             'title' => 'Actualizado artículo',
             'slug' => $article->slug,      // mismo slug, para probar la regla de unicidad del slug
             'content' => 'Contenido actualizado del artículo'
-        ])->dump()->assertOk();;
+        ])->assertOk();;
 
 
         // La respuesta tendrá un header 'Location' con la ruta al artículo actualizado, según especificación json:api
@@ -143,6 +143,18 @@ class UpdateArticleTest extends TestCase
             'content' => 'Contenido del artículo'
         ])->assertJsonApiValidationErrors('slug');
     }
+
+    /** @test */
+//    public function slug_must_not_contain_spaces()
+//    {
+//        $article = Article::factory()->create();
+//
+//        $this->patchJson(route('api.v1.articles.update', $article), [
+//            'title' => 'Nuevo artículo',
+//            'slug' => 'start-w ith-dashes',  // espacios no están permitidos.
+//            'content' => 'Contenido del artículo'
+//        ])->assertJsonApiValidationErrors('slug');
+//    }
 
 
     /** @test */

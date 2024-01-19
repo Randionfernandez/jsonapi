@@ -7,14 +7,23 @@ use App\Http\Requests\SaveArticleRequest;
 use App\Http\Resources\ArticleCollection;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 
 class ArticleController extends Controller
 {
-    public function index(): ArticleCollection
+    public function index(Request $request): ArticleCollection
     {
-        $articles = Article::all();
-        return ArticleCollection::make(Article::all());
+//        $articles = Article::all();
+        $sortField = $request->input('sort');
+        $sortDirection = Str::of($sortField)->startsWith('-') ? 'desc' : 'asc';
+        $sortField = ltrim($sortField, '-');
+
+        $url = route('api.v1.articles.index', ['sort' => $sortField]);
+
+        $articles = Article::orderBy($sortField, $sortDirection)->get();
+        return ArticleCollection::make($articles);
     }
 
     public function store(SaveArticleRequest $request)

@@ -20,6 +20,8 @@ class SaveArticleRequest extends FormRequest
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     *
+     * @todo no permitir espacios en blanco
      */
     public function rules(): array
     {
@@ -28,6 +30,7 @@ class SaveArticleRequest extends FormRequest
             'data.attributes.title' => ['required', 'min:4'],
             'data.attributes.slug' => [
                 'required',
+//                'not_regex:/^[^\s]+$/',   // No está permitido tener espacios en blanco. Sin terminar
                 new Slug,
 //                'regex:/^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*$/',
                 Rule::unique('articles', 'slug')->ignore($this->route('article'))],
