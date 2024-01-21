@@ -146,15 +146,16 @@ class CreateArticleTest extends TestCase
         ])->assertJsonApiValidationErrors('slug');
     }
 
-//    /** @test */
-//    public function slug_must_not_contain_spaces()
-//    {
-//        $this->postJson(route('api.v1.articles.store'), [
-//            'title' => 'Nuevo artículo',
-//            'slug' => ' starxt-with-dashes',  // espacios no están permitidos.
-//            'content' => 'Contenido del artículo'
-//        ])->assertJsonApiValidationErrors('slug');
-//    }
+    /** @test */
+    public function slug_must_not_contain_spaces()
+    {
+        $this->postJson(route('api.v1.articles.store'), [
+            'title' => 'Nuevo artículo',
+            // los espacios al principio y al final de un string son eliminados por el middleware global TrimStrings
+            'slug' => 'star t-with-dashes',  // espacios no están permitidos.
+            'content' => 'Contenido del artículo'
+        ])->assertJsonApiValidationErrors('slug');
+    }
 
     /** @test */
     public function content_is_required()

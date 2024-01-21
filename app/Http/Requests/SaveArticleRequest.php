@@ -30,7 +30,6 @@ class SaveArticleRequest extends FormRequest
             'data.attributes.title' => ['required', 'min:4'],
             'data.attributes.slug' => [
                 'required',
-//                'not_regex:/^[^\s]+$/',   // No está permitido tener espacios en blanco. Sin terminar
                 new Slug,
 //                'regex:/^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*$/',
                 Rule::unique('articles', 'slug')->ignore($this->route('article'))],

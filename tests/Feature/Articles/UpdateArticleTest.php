@@ -145,16 +145,17 @@ class UpdateArticleTest extends TestCase
     }
 
     /** @test */
-//    public function slug_must_not_contain_spaces()
-//    {
-//        $article = Article::factory()->create();
-//
-//        $this->patchJson(route('api.v1.articles.update', $article), [
-//            'title' => 'Nuevo artículo',
-//            'slug' => 'start-w ith-dashes',  // espacios no están permitidos.
-//            'content' => 'Contenido del artículo'
-//        ])->assertJsonApiValidationErrors('slug');
-//    }
+    public function slug_must_not_contain_spaces()
+    {
+        $article = Article::factory()->create();
+
+        $this->patchJson(route('api.v1.articles.update', $article), [
+            'title' => 'Nuevo artículo',
+            // los espacios al principio y al final de un string son eliminados por el middleware global TrimStrings
+            'slug' => 'start-w ith-dashes',  // espacios no están permitidos.
+            'content' => 'Contenido del artículo'
+        ])->assertJsonApiValidationErrors('slug');
+    }
 
 
     /** @test */

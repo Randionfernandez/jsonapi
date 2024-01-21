@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Rules;
 
 use Closure;
@@ -10,26 +9,29 @@ class Slug implements ValidationRule
     /**
      * Run the validation rule.
      *
-     * @param  \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString  $fail
+     * @param \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString $fail
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (preg_match('/_/', $value)){
+        if (str_contains($value, '_')) {
             $fail(trans('validation_custom.no_underscores'));
         }
 
-        if (preg_match('/^-/', $value)){
+        if (str_starts_with($value, '-')) {
             $fail(trans('validation_custom.no_starting_dashes'));
         }
 
-        if (preg_match('/-$/', $value)){
+        if (str_ends_with($value, '-')) {
             $fail(trans('validation_custom.no_ending_dashes'));
         }
 
-        if (!preg_match('/[a-zA-Z0-9-]+/', $value)){
-            $fail(trans('validation_custom.no_valid_characters'));
+        if (str_contains( $value, ' ')) {   // No está permitido tener espacios en blanco.
+            $fail(trans('validation_custom.no_spaces'));
         }
 
+        if (!preg_match('/[a-zA-Z0-9-]+/', $value)) {
+            $fail(trans('validation_custom.no_valid_characters'));
+        }
 
     }
 }
