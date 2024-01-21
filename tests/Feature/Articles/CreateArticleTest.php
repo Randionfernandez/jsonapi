@@ -166,4 +166,6 @@ class CreateArticleTest extends TestCase
         ])->assertJsonApiValidationErrors('content');
     }
 
+
+
 }

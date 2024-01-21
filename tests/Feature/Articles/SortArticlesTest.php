@@ -77,4 +77,50 @@ class SortArticlesTest extends TestCase
             'A content',
         ]);
     }
+
+    /** @test */
+    public function can_sort_articles_by_title_and_content(): void
+    {
+        Article::factory()->create([
+            'title' => "A title",
+            'content' => "A content"]);
+
+        Article::factory()->create([
+            'title' => "B title",
+            'content' => "B content"]);
+
+        Article::factory()->create([
+            'title' => "A title",
+            'content' => "C content"]);
+
+
+        // creamos la ruta según json:api:  /articles?sort=title,-content
+        $url = route('api.v1.articles.index', ['sort' => 'title,-content']);
+
+        $this->getJson($url)->assertSeeInOrder([
+            'C content',
+            'A content',
+            'B content',
+        ]);
+
+        // creamos la ruta según json:api:  /articles?sort=title,content
+        $url = route('api.v1.articles.index', ['sort' => 'title,content']);
+
+        $this->getJson($url)->assertSeeInOrder([
+            'A content',
+            'C content',
+            'B content',
+        ]);
+    }
+
+    /** @test */
+    public function cannot_sort_articles_by_unknown_fields()
+    {
+        Article::factory(3)->create();
+        // creamos la ruta según json:api:  /articles?sort=unknown
+        $url = route('api.v1.articles.index', ['sort' => 'unknown']);
+
+        $this->getJson($url)->assertStatus(400);  // Estado 400 = Bad Request
+    }
+
 }
