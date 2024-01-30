@@ -1,0 +1,43 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Copy files to server
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: ./
+        target: /var/www/laravel/aprendible/jsonapi
+
+
+    - name: Install dependencies
+      run: |
+        composer install --no-interaction --prefer-dist --optimize-autoloader
+        npm install
+        npm run production
+
+
+    - name: SSH into server and run commands
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd /var/www/laravel/aprendible/jsonapi
+          php artisan migrate --force
+          php artisan config:cache
+          php artisan route:cache
