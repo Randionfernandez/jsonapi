@@ -33,8 +33,6 @@ class FilterArticlesTest extends TestCase
             ->assertJsonCount(1, 'data')
             ->assertSee("Aprende Laravel Desde Cero")
             ->assertDontSee("Other Article");
-
-
     }
 
     /** @test */
@@ -59,8 +57,6 @@ class FilterArticlesTest extends TestCase
             ->assertJsonCount(1, 'data')
             ->assertSee("Aprende Laravel Desde Cero")
             ->assertDontSee("Other Article");
-
-
     }
 
     /** @test */
@@ -87,8 +83,6 @@ class FilterArticlesTest extends TestCase
             ->assertJsonCount(1, 'data')
             ->assertSee("Aprende Laravel from 2021")
             ->assertDontSee("Article from 2022");
-
-
     }
 
     /** @test */
@@ -121,8 +115,6 @@ class FilterArticlesTest extends TestCase
             ->assertSee("Aprende Laravel from month 3")
             ->assertSee("Otro Aprende Laravel from month 3")
             ->assertDontSee("Article from month 1");
-
-
     }
 
     /** @test */
@@ -138,6 +130,6 @@ class FilterArticlesTest extends TestCase
         ]);
 
         $this->getJson($url)
-            ->assertStatus(400); // mala petición
+            ->assertStatus(400); // Mala petición
     }
 }
