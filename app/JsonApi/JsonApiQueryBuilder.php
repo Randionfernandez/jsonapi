@@ -2,6 +2,7 @@
 
 namespace App\JsonApi;
 
+use App\Models\Article;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
@@ -41,6 +42,22 @@ class JsonApiQueryBuilder
         };
     }
 
+    public function sparseFieldset()
+    {
+        return function () {
+            /** @var Builder $this */
+            if (request()->isNotFilled('fields')) {
+                return $this;
+            }
+//            dd(request('fields.articles'));
+            $fields = explode(',', request('fields.articles'));
+
+            if (!in_array('slug', $fields))
+                $fields[] = 'slug';
+            return $this->addSelect($fields);
+        };
+    }
+
     public function jsonPaginate(): Closure
     {
         return function () {
@@ -50,7 +67,7 @@ class JsonApiQueryBuilder
                 $columns = ['*'],
                 $pageName = 'page[number]',
                 $page = request('page.number', 1),
-            )->appends(request()->only('sort', 'filter', 'page.size'));
+            )->appends(request()->only('sort', 'filter', 'field', 'page'));
         };
     }
 }

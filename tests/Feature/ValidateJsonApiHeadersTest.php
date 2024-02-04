@@ -94,7 +94,7 @@ class ValidateJsonApiHeadersTest extends TestCase
 
         $this->get('empty_response', [
             'accept' => 'application/vnd.api+json',
-        ])->dump()->assertHeaderMissing('content-type');
+        ])->assertHeaderMissing('content-type');
 
         $this->post('empty_response', [], [
             'accept' => 'application/vnd.api+json',

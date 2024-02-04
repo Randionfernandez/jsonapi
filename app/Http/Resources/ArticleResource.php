@@ -17,22 +17,33 @@ class ArticleResource extends JsonResource
 //        return parent::toArray($request);
 
         return [
-                'type' => 'articles',
-                'id' => (string) $this->resource->getRouteKey(),
-                'attributes'=> [
-                    'title' => $this->resource->title,
-                    'slug' => $this->resource->slug,
-                    'content' => $this->resource->content
-                ],
-                'links' => [
-                    'self' => route('api.v1.articles.show', $this->resource)
-                ],
-            ];
+            'type' => 'articles',
+            'id' => (string)$this->resource->getRouteKey(),
+            'attributes' => array_filter([
+                'title' => $this->resource->title,
+                'slug' => $this->resource->slug,
+                'content' => $this->resource->content
+            ], function ($value) {
+                if (request()->isNotFilled('fields')) {
+                    return true;
+                }
+
+                $fields = explode(',', request('fields.articles'));
+                if ($value === $this->getRouteKey()) {
+                    return in_array('slug', $fields);
+                }
+                return $value;
+            }),
+            'links' => [
+                'self' => route('api.v1.articles.show', $this->resource)
+            ],
+        ];
     }
+
     public function toResponse($request): \Illuminate\Http\JsonResponse
     {
         return parent::toResponse($request)->withHeaders([
-            'Location'=> route('api.v1.articles.show', $this->resource)
+            'Location' => route('api.v1.articles.show', $this->resource)
         ]);
     }
 }
