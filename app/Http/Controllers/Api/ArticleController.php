@@ -36,12 +36,18 @@ class ArticleController extends Controller
         return ArticleResource::make($article);
     }
 
-    public function show(Article $article): ArticleResource
+    public function show($article): ArticleResource
     {
+        // article/the-slug?fields[articles]=title
+        $article = Article::where('slug', $article)
+            ->sparseFieldset()
+            ->firstOrFail();
+//dd($article);
         return ArticleResource::make($article);
     }
 
-    public function destroy(Article $article): Response
+    public
+    function destroy(Article $article): Response
     {
         $article->Delete();
         return response()->NoContent();

@@ -2,7 +2,6 @@
 
 namespace App\JsonApi;
 
-use App\Models\Article;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
@@ -41,7 +40,9 @@ class JsonApiQueryBuilder
             return $this;
         };
     }
-
+/**
+ *@todo manejar más de un query parameter de tipo fields[] en el mismo query string
+ */
     public function sparseFieldset()
     {
         return function () {
@@ -50,10 +51,15 @@ class JsonApiQueryBuilder
                 return $this;
             }
 //            dd(request('fields.articles'));
-            $fields = explode(',', request('fields.articles'));
+            $resourceType = $this->model->getTable();
+            if (property_exists($this->model, 'resourceType')) {
+                $resourceType = $this->model->resourceType;
+            }
+            $fields = explode(',', request('fields.' . $resourceType));
 
-            if (!in_array('slug', $fields))
-                $fields[] = 'slug';
+            $routeKeyName = $this->model->getRouteKeyName();
+            if (!in_array($routeKeyName, $fields))
+                $fields[] = $routeKeyName;
             return $this->addSelect($fields);
         };
     }
