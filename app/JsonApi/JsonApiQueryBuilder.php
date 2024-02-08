@@ -40,9 +40,10 @@ class JsonApiQueryBuilder
             return $this;
         };
     }
-/**
- *@todo manejar más de un query parameter de tipo fields[] en el mismo query string
- */
+
+    /**
+     * @todo ¿qué sucede cuando hay más de un query parameter de tipo fields[] en el mismo query string?
+     */
     public function sparseFieldset()
     {
         return function () {
@@ -51,11 +52,8 @@ class JsonApiQueryBuilder
                 return $this;
             }
 //            dd(request('fields.articles'));
-            $resourceType = $this->model->getTable();
-            if (property_exists($this->model, 'resourceType')) {
-                $resourceType = $this->model->resourceType;
-            }
-            $fields = explode(',', request('fields.' . $resourceType));
+
+            $fields = explode(',', request('fields.' . $this->getResourceType()));
 
             $routeKeyName = $this->model->getRouteKeyName();
             if (!in_array($routeKeyName, $fields))
@@ -74,6 +72,17 @@ class JsonApiQueryBuilder
                 $pageName = 'page[number]',
                 $page = request('page.number', 1),
             )->appends(request()->only('sort', 'filter', 'field', 'page'));
+        };
+    }
+
+    public function getResourceType(): Closure
+    {
+        return function () {
+            /** @var Builder $this */
+            if (property_exists($this->model, 'resourceType')) {
+                return $this->model->resourceType;
+            }
+            return $this->model->getTable();
         };
     }
 }
