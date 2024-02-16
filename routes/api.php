@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 //Route::patch('articles/{article}', [ArticleController::class, 'update'] )->name('api.v1.articles.update');
 //Route::delete('articles/{article}', [ArticleController::class, 'destroy'] )->name('api.v1.articles.destroy');
 
-Route::apiResource('articles', ArticleController::class)->names('api.v1.articles');
+Route::middleware('auth:sanctum')->apiResource('articles', ArticleController::class)->names('api.v1.articles');
 
 Route::withoutMiddleware(ValidateJsonApiDocument::class)
     ->post('login', LoginController::class)
