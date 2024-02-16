@@ -22,7 +22,7 @@ class LoginController extends Controller
         ]);
         $user= User::whereEmail($request->email)->first();
 //                dd($user->toArray());
-        if (Hash::check($request->password, $user->password)) {
+        if (!Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email'=> [__('auth.failed')]
             ]);

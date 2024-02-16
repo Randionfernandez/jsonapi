@@ -23,7 +23,6 @@ class AccessTokenTest extends TestCase
         ]);
 
         $response = $this->postJson(route('api.v1.login'), $data);
-
         $token = $response->json('plain-text-token');
 
         $dbToken = PersonalAccessToken::findToken($token);
@@ -45,7 +44,7 @@ class AccessTokenTest extends TestCase
         ]);
 
         $response = $this->postJson(route('api.v1.login'), $data);
-        $response->dump()->assertJsonValidationErrorFor('password');
+        $response->assertJsonValidationErrorFor('password');
 
     }
 

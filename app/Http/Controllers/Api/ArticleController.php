@@ -13,14 +13,15 @@ class ArticleController extends Controller
 {
     public function index(): ArticleCollection
     {
-        $articles = Article::query()
-            ->allowedFilters(['title', 'content', 'year', 'month'])
-            ->allowedSorts(['title', 'content'])
-            ->sparseFieldset()
-            ->jsonPaginate();
-
-
-        return ArticleCollection::make($articles);
+        if (auth()->user()->tokenCan('bla')) {
+            $articles = Article::query()
+                ->allowedFilters(['title', 'content', 'year', 'month'])
+                ->allowedSorts(['title', 'content'])
+                ->sparseFieldset()
+                ->jsonPaginate();
+            return ArticleCollection::make($articles);
+        }
+        return  response()->json("error");
     }
 
     public function store(SaveArticleRequest $request)
