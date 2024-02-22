@@ -21,10 +21,10 @@ class ListArticlesTest extends TestCase
 
 
         $url =route('api.v1.articles.show', $article);
-        $response = $this->getJson($url);
-//        [
-//            'Authorization'=>"1|b8QBbxdfJZo0TO3naoOuKzbuvFTU2you2PCkZZMV826572d4"
-//        ]
+
+        $response= $this->getJson($url);
+dd($response);
+//        ->withHeaders('Authorization', 'Bearer 1|b8QBbxdfJZo0TO3naoOuKzbuvFTU2you2PCkZZMV826572d4')
         //        $response->assertSee($article->title);
         $response->assertExactJson([
             'data' => [

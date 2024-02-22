@@ -37,7 +37,7 @@ class ArticleController extends Controller
         return ArticleResource::make($article);
     }
 
-    public function show($article): ArticleResource
+    public function show(Article $article): ArticleResource
     {
         // article/the-slug?fields[articles]=title
         $article = Article::where('slug', $article)
