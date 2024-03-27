@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Laravel\Sanctum\HasApiTokens;
 
 class Article extends Model
 {
-    use HasFactory;
+    use HasFactory, HasApiTokens;
 
     public $resourceType= 'articles';   // Introducido por tema 26
 
@@ -19,8 +20,6 @@ class Article extends Model
      * @var array
      */
     protected $guarded = [];
-//    protected $primaryKey = 'slug';
-//    protected $keyType = 'string';
 
     /**
      * The attributes that should be cast to native types.
@@ -33,10 +32,10 @@ class Article extends Model
         'user_id' => 'integer',
     ];
 
-//    public function getRouteKeyName()
-//    {
-//        return 'slug';
-//    }
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 
     public function user(): BelongsTo
     {

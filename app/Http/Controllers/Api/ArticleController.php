@@ -13,15 +13,12 @@ class ArticleController extends Controller
 {
     public function index(): ArticleCollection
     {
-        if (auth()->user()->tokenCan('bla')) {
-            $articles = Article::query()
-                ->allowedFilters(['title', 'content', 'year', 'month'])
-                ->allowedSorts(['title', 'content'])
-                ->sparseFieldset()
-                ->jsonPaginate();
-            return ArticleCollection::make($articles);
-        }
-        return  response()->json("error");
+        $articles = Article::query()
+            ->allowedFilters(['title', 'content', 'year', 'month'])
+            ->allowedSorts(['title', 'content'])
+            ->sparseFieldset()
+            ->jsonPaginate();
+        return ArticleCollection::make($articles);
     }
 
     public function store(SaveArticleRequest $request)
@@ -47,8 +44,7 @@ class ArticleController extends Controller
         return ArticleResource::make($article);
     }
 
-    public
-    function destroy(Article $article): Response
+    public function destroy(Article $article): Response
     {
         $article->Delete();
         return response()->NoContent();
